@@ -1,0 +1,5 @@
+{
+  "name": "EduPulse AI",
+  "description": "A smart learning recommendation system that analyzes student grades, learning styles, and LMS history to suggest personalized study materials, courses, and study groups using Gemini AI.",
+  "requestFramePermissions": []
+}
