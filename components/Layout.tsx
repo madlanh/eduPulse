@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { BookOpen, User, LayoutDashboard, BrainCircuit, Globe, LogOut, ArrowLeft, Users } from 'lucide-react';
-import { Language, UserRole } from '../types';
+import { BookOpen, User, LayoutDashboard, BrainCircuit, Globe, LogOut, ArrowLeft, Users, Moon, Sun } from 'lucide-react';
+import { Language, UserRole, Theme } from '../types';
 import { TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -9,6 +9,8 @@ interface LayoutProps {
   onTabChange: (tab: string) => void;
   language: Language;
   setLanguage: (lang: Language) => void;
+  theme: Theme;
+  toggleTheme: () => void;
   onLogout: () => void;
   userRole: UserRole;
   showBackBtn?: boolean;
@@ -21,6 +23,8 @@ const Layout: React.FC<LayoutProps> = ({
   onTabChange, 
   language, 
   setLanguage, 
+  theme,
+  toggleTheme,
   onLogout,
   userRole,
   showBackBtn = false,
@@ -34,35 +38,26 @@ const Layout: React.FC<LayoutProps> = ({
     { id: 'recommendations', label: t.recommendations, icon: BrainCircuit },
   ];
 
-  // If admin is at root level (not viewing a student), we might want fewer options, 
-  // but for simplicity we'll just keep standard structure or hide if necessary.
-  // In the App.tsx logic, if showBackBtn is false and user is admin, 
-  // we are likely in the list view, so maybe we don't need side tabs at all, 
-  // or we can just have a 'Student List' tab.
-  // For this implementation: 
-  // 1. If Admin viewing list -> Sidebar has "Student List" (active)
-  // 2. If Admin viewing student -> Sidebar has normal tabs + "Back" button
-
   const effectiveNavItems = (userRole === 'admin' && !showBackBtn) 
     ? [{ id: 'admin-list', label: TRANSLATIONS[language].admin.studentList, icon: Users }] 
     : navItems;
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden transition-colors duration-200">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
-        <div className="p-6 border-b border-gray-100 flex items-center space-x-3">
+      <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 hidden md:flex flex-col transition-colors duration-200">
+        <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center space-x-3">
           <div className="bg-primary-600 p-2 rounded-lg">
              <BookOpen className="text-white w-6 h-6" />
           </div>
-          <span className="text-xl font-bold text-gray-800">EduPulse</span>
+          <span className="text-xl font-bold text-gray-800 dark:text-white">EduPulse</span>
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
           {showBackBtn && (
             <button
               onClick={onBack}
-              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-700 bg-red-50 hover:bg-red-100 mb-4 transition-colors font-medium"
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-700 dark:text-primary-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 mb-4 transition-colors font-medium"
             >
               <ArrowLeft size={20} />
               <span>{t.backToList}</span>
@@ -80,8 +75,8 @@ const Layout: React.FC<LayoutProps> = ({
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                   isActive 
-                    ? 'bg-primary-50 text-primary-700 font-medium border-l-4 border-primary-600' 
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-primary-50 dark:bg-red-900/20 text-primary-600 dark:text-primary-400 font-medium border-l-4 border-primary-600 dark:border-primary-500' 
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 <Icon size={20} />
@@ -91,41 +86,51 @@ const Layout: React.FC<LayoutProps> = ({
           })}
         </nav>
 
-        <div className="p-4 space-y-4 border-t border-gray-100">
-             {/* Language Switcher */}
-            <div className="bg-gray-50 p-2 rounded-lg flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-gray-600">
-                    <Globe size={16} />
-                    <span className="text-sm font-medium">Language</span>
+        <div className="p-4 space-y-4 border-t border-gray-100 dark:border-gray-700">
+             {/* Language & Theme Switcher Row */}
+            <div className="flex items-center gap-2">
+                <div className="flex-1 bg-gray-50 dark:bg-gray-700 p-2 rounded-lg flex items-center justify-between">
+                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                        <Globe size={16} />
+                        <span className="text-xs font-medium">Lang</span>
+                    </div>
+                    <div className="flex bg-white dark:bg-gray-600 rounded-md shadow-sm overflow-hidden">
+                        <button 
+                            onClick={() => setLanguage('id')}
+                            className={`px-2 py-1 text-[10px] font-bold transition-colors ${language === 'id' ? 'bg-red-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500'}`}
+                        >
+                            ID
+                        </button>
+                        <button 
+                            onClick={() => setLanguage('en')}
+                            className={`px-2 py-1 text-[10px] font-bold transition-colors ${language === 'en' ? 'bg-red-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500'}`}
+                        >
+                            EN
+                        </button>
+                    </div>
                 </div>
-                <div className="flex bg-white rounded-md shadow-sm overflow-hidden">
-                    <button 
-                        onClick={() => setLanguage('id')}
-                        className={`px-2 py-1 text-xs font-bold transition-colors ${language === 'id' ? 'bg-red-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
-                    >
-                        ID
-                    </button>
-                    <button 
-                         onClick={() => setLanguage('en')}
-                         className={`px-2 py-1 text-xs font-bold transition-colors ${language === 'en' ? 'bg-red-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
-                    >
-                        EN
-                    </button>
-                </div>
+
+                <button 
+                  onClick={toggleTheme}
+                  className="p-2 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  aria-label="Toggle Theme"
+                >
+                  {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                </button>
             </div>
 
             <button
                 onClick={onLogout}
-                className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             >
                 <LogOut size={20} />
                 <span className="font-medium">{t.logout}</span>
             </button>
 
             {userRole === 'student' && (
-                <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-lg p-4 text-white text-sm">
+                <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-lg p-4 text-white text-sm shadow-md">
                     <p className="font-semibold mb-1">{t.protip}</p>
-                    <p className="opacity-90">{t.protipDesc}</p>
+                    <p className="opacity-90 text-xs">{t.protipDesc}</p>
                 </div>
             )}
         </div>
@@ -134,28 +139,34 @@ const Layout: React.FC<LayoutProps> = ({
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden relative">
         {/* Mobile Header */}
-        <header className="md:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <header className="md:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between transition-colors">
            <div className="flex items-center space-x-2">
              {showBackBtn ? (
-                 <button onClick={onBack} className="p-1 -ml-1 text-gray-600">
+                 <button onClick={onBack} className="p-1 -ml-1 text-gray-600 dark:text-gray-300">
                      <ArrowLeft size={24} />
                  </button>
              ) : (
                 <BookOpen className="text-primary-600 w-6 h-6" />
              )}
-             <span className="font-bold text-gray-800">EduPulse</span>
+             <span className="font-bold text-gray-800 dark:text-white">EduPulse</span>
            </div>
            
-           <div className="flex items-center space-x-4">
+           <div className="flex items-center space-x-3">
+             <button 
+                  onClick={toggleTheme}
+                  className="text-gray-500 dark:text-gray-300 hover:text-primary-600"
+                >
+                  {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+             </button>
              <button 
                 onClick={() => setLanguage(language === 'en' ? 'id' : 'en')}
-                className="font-bold text-primary-600 text-sm border border-primary-200 px-2 py-1 rounded-md"
+                className="font-bold text-primary-600 dark:text-primary-400 text-sm border border-primary-200 dark:border-primary-800 px-2 py-1 rounded-md"
              >
                 {language.toUpperCase()}
              </button>
              <button 
                 onClick={onLogout}
-                className="text-gray-500 hover:text-red-600"
+                className="text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
                 aria-label="Logout"
              >
                 <LogOut size={20} />
@@ -165,12 +176,12 @@ const Layout: React.FC<LayoutProps> = ({
 
          {/* Mobile Nav Bar (Bottom) - Only show if standard view (Student or Admin View Student) */}
          {(!showBackBtn && userRole === 'admin') ? null : (
-             <div className="md:hidden bg-white border-b border-gray-100 px-4 py-2 flex justify-around">
+             <div className="md:hidden bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-4 py-2 flex justify-around">
                 {navItems.map((item) => (
                     <button 
                     key={item.id} 
                     onClick={() => onTabChange(item.id)}
-                    className={`flex flex-col items-center p-2 ${activeTab === item.id ? 'text-primary-600' : 'text-gray-400'}`}
+                    className={`flex flex-col items-center p-2 ${activeTab === item.id ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
                     >
                     <item.icon size={20} />
                     <span className="text-[10px] mt-1">{item.label}</span>
