@@ -4,7 +4,7 @@ import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
 interface LoginProps {
-  onLogin: () => void;
+  onLogin: (email: string) => void;
   language: Language;
   setLanguage: (lang: Language) => void;
 }
@@ -16,9 +16,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, language, setLanguage }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login logic
     if (email && password) {
-      onLogin();
+      onLogin(email);
     }
   };
 

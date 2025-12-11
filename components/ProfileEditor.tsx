@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StudentProfile, Course, LearningStyle, Language } from '../types';
 import { Plus, Trash2, Save } from 'lucide-react';
 import { TRANSLATIONS } from '../constants';
@@ -15,6 +15,12 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
   const [localProfile, setLocalProfile] = useState<StudentProfile>(profile);
   const [localCourses, setLocalCourses] = useState<Course[]>(courses);
   const t = TRANSLATIONS[language].profile;
+
+  // IMPORTANT: Update local state if the parent passes a new profile (e.g., Admin switches student)
+  useEffect(() => {
+    setLocalProfile(profile);
+    setLocalCourses(courses);
+  }, [profile, courses]);
 
   const handleProfileChange = (field: keyof StudentProfile, value: any) => {
     setLocalProfile(prev => ({ ...prev, [field]: value }));

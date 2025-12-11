@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { BookOpen, User, LayoutDashboard, BrainCircuit, Globe, LogOut } from 'lucide-react';
-import { Language } from '../types';
+import { BookOpen, User, LayoutDashboard, BrainCircuit, Globe, LogOut, ArrowLeft, Users } from 'lucide-react';
+import { Language, UserRole } from '../types';
 import { TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -10,9 +10,22 @@ interface LayoutProps {
   language: Language;
   setLanguage: (lang: Language) => void;
   onLogout: () => void;
+  userRole: UserRole;
+  showBackBtn?: boolean;
+  onBack?: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, language, setLanguage, onLogout }) => {
+const Layout: React.FC<LayoutProps> = ({ 
+  children, 
+  activeTab, 
+  onTabChange, 
+  language, 
+  setLanguage, 
+  onLogout,
+  userRole,
+  showBackBtn = false,
+  onBack
+}) => {
   const t = TRANSLATIONS[language].nav;
   
   const navItems = [
@@ -20,6 +33,19 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
     { id: 'profile', label: t.profile, icon: User },
     { id: 'recommendations', label: t.recommendations, icon: BrainCircuit },
   ];
+
+  // If admin is at root level (not viewing a student), we might want fewer options, 
+  // but for simplicity we'll just keep standard structure or hide if necessary.
+  // In the App.tsx logic, if showBackBtn is false and user is admin, 
+  // we are likely in the list view, so maybe we don't need side tabs at all, 
+  // or we can just have a 'Student List' tab.
+  // For this implementation: 
+  // 1. If Admin viewing list -> Sidebar has "Student List" (active)
+  // 2. If Admin viewing student -> Sidebar has normal tabs + "Back" button
+
+  const effectiveNavItems = (userRole === 'admin' && !showBackBtn) 
+    ? [{ id: 'admin-list', label: TRANSLATIONS[language].admin.studentList, icon: Users }] 
+    : navItems;
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -33,9 +59,21 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
-          {navItems.map((item) => {
+          {showBackBtn && (
+            <button
+              onClick={onBack}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-700 bg-red-50 hover:bg-red-100 mb-4 transition-colors font-medium"
+            >
+              <ArrowLeft size={20} />
+              <span>{t.backToList}</span>
+            </button>
+          )}
+
+          {effectiveNavItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id;
+            // Highlight if active. If in admin list view, 'admin-list' is effectively active
+            const isActive = activeTab === item.id || (userRole === 'admin' && !showBackBtn && item.id === 'admin-list');
+            
             return (
               <button
                 key={item.id}
@@ -84,10 +122,12 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
                 <span className="font-medium">{t.logout}</span>
             </button>
 
-            <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-lg p-4 text-white text-sm">
-                <p className="font-semibold mb-1">{t.protip}</p>
-                <p className="opacity-90">{t.protipDesc}</p>
-            </div>
+            {userRole === 'student' && (
+                <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-lg p-4 text-white text-sm">
+                    <p className="font-semibold mb-1">{t.protip}</p>
+                    <p className="opacity-90">{t.protipDesc}</p>
+                </div>
+            )}
         </div>
       </aside>
 
@@ -96,7 +136,13 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
         {/* Mobile Header */}
         <header className="md:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between">
            <div className="flex items-center space-x-2">
-             <BookOpen className="text-primary-600 w-6 h-6" />
+             {showBackBtn ? (
+                 <button onClick={onBack} className="p-1 -ml-1 text-gray-600">
+                     <ArrowLeft size={24} />
+                 </button>
+             ) : (
+                <BookOpen className="text-primary-600 w-6 h-6" />
+             )}
              <span className="font-bold text-gray-800">EduPulse</span>
            </div>
            
@@ -117,19 +163,21 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
            </div>
         </header>
 
-         {/* Mobile Nav Bar (Bottom) - Optional additional nav for better UX could go here, but keeping header nav for simplicity as per previous code */}
-         <div className="md:hidden bg-white border-b border-gray-100 px-4 py-2 flex justify-around">
-            {navItems.map((item) => (
-                <button 
-                key={item.id} 
-                onClick={() => onTabChange(item.id)}
-                className={`flex flex-col items-center p-2 ${activeTab === item.id ? 'text-primary-600' : 'text-gray-400'}`}
-                >
-                <item.icon size={20} />
-                <span className="text-[10px] mt-1">{item.label}</span>
-                </button>
-            ))}
-         </div>
+         {/* Mobile Nav Bar (Bottom) - Only show if standard view (Student or Admin View Student) */}
+         {(!showBackBtn && userRole === 'admin') ? null : (
+             <div className="md:hidden bg-white border-b border-gray-100 px-4 py-2 flex justify-around">
+                {navItems.map((item) => (
+                    <button 
+                    key={item.id} 
+                    onClick={() => onTabChange(item.id)}
+                    className={`flex flex-col items-center p-2 ${activeTab === item.id ? 'text-primary-600' : 'text-gray-400'}`}
+                    >
+                    <item.icon size={20} />
+                    <span className="text-[10px] mt-1">{item.label}</span>
+                    </button>
+                ))}
+             </div>
+         )}
 
         <div className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="max-w-6xl mx-auto">

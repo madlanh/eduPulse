@@ -1,6 +1,8 @@
-import { Course, LearningStyle, StudentProfile } from './types';
+import { Course, LearningStyle, StudentProfile, StudentData } from './types';
 
 export const INITIAL_PROFILE: StudentProfile = {
+  id: "s1",
+  email: "alex@student.university.ac.id",
   name: "Alex Johnson",
   major: "Computer Science",
   semester: 4,
@@ -16,6 +18,51 @@ export const INITIAL_COURSES: Course[] = [
   { id: '3', name: 'Introduction to Psychology', grade: 92, credits: 3, category: 'Elective' },
   { id: '4', name: 'Database Management', grade: 78, credits: 3, category: 'Core' },
   { id: '5', name: 'Physics I', grade: 72, credits: 4, category: 'Core' },
+];
+
+export const MOCK_STUDENTS_DB: StudentData[] = [
+  {
+    profile: INITIAL_PROFILE,
+    courses: INITIAL_COURSES
+  },
+  {
+    profile: {
+      id: "s2",
+      email: "sarah@student.university.ac.id",
+      name: "Sarah Wijaya",
+      major: "Medicine",
+      semester: 6,
+      gpa: 3.85,
+      learningStyle: LearningStyle.READING_WRITING,
+      interests: ["Anatomy", "Public Health", "Research"],
+      weaknesses: ["Clinical Practice Stress", "Sleep Schedule"]
+    },
+    courses: [
+      { id: '101', name: 'Human Anatomy', grade: 95, credits: 4, category: 'Core' },
+      { id: '102', name: 'Pathology', grade: 88, credits: 4, category: 'Core' },
+      { id: '103', name: 'Biochemistry', grade: 92, credits: 3, category: 'Core' },
+      { id: '104', name: 'Medical Ethics', grade: 85, credits: 2, category: 'Elective' }
+    ]
+  },
+  {
+    profile: {
+      id: "s3",
+      email: "budi@student.university.ac.id",
+      name: "Budi Santoso",
+      major: "Mechanical Engineering",
+      semester: 2,
+      gpa: 2.4,
+      learningStyle: LearningStyle.KINESTHETIC,
+      interests: ["Robotics", "Automotive", "3D Printing"],
+      weaknesses: ["Theoretical Physics", "Calculus", "Writing Reports"]
+    },
+    courses: [
+      { id: '201', name: 'Calculus I', grade: 55, credits: 4, category: 'Core' },
+      { id: '202', name: 'Physics Mechanics', grade: 60, credits: 4, category: 'Core' },
+      { id: '203', name: 'Engineering Drawing', grade: 85, credits: 3, category: 'Lab' },
+      { id: '204', name: 'Material Science', grade: 65, credits: 3, category: 'Core' }
+    ]
+  }
 ];
 
 export const TRANSLATIONS = {
@@ -34,7 +81,8 @@ export const TRANSLATIONS = {
       recommendations: "AI Recommendations",
       protip: "Pro Tip",
       protipDesc: "Update your grades weekly for better AI accuracy.",
-      logout: "Sign Out"
+      logout: "Sign Out",
+      backToList: "Back to Student List"
     },
     dashboard: {
       welcome: "Welcome back",
@@ -81,6 +129,20 @@ export const TRANSLATIONS = {
       failed: "Failed to generate recommendations",
       reason: "Reason",
       type: "Type"
+    },
+    admin: {
+      studentList: "Student Management",
+      totalStudents: "Total Students",
+      avgGpa: "Average GPA",
+      atRisk: "Students At Risk",
+      searchPlaceholder: "Search by name or major...",
+      viewDetail: "View Detail",
+      name: "Name",
+      major: "Major",
+      sem: "Sem",
+      gpa: "GPA",
+      status: "Status",
+      actions: "Actions"
     }
   },
   id: {
@@ -98,7 +160,8 @@ export const TRANSLATIONS = {
       recommendations: "Rekomendasi AI",
       protip: "Tips Pro",
       protipDesc: "Perbarui nilai Anda setiap minggu untuk akurasi AI yang lebih baik.",
-      logout: "Keluar"
+      logout: "Keluar",
+      backToList: "Kembali ke Daftar"
     },
     dashboard: {
       welcome: "Selamat datang kembali",
@@ -145,6 +208,20 @@ export const TRANSLATIONS = {
       failed: "Gagal menghasilkan rekomendasi",
       reason: "Alasan",
       type: "Tipe"
+    },
+    admin: {
+      studentList: "Manajemen Mahasiswa",
+      totalStudents: "Total Mahasiswa",
+      avgGpa: "Rata-rata IPK",
+      atRisk: "Mahasiswa Berisiko",
+      searchPlaceholder: "Cari nama atau jurusan...",
+      viewDetail: "Lihat Detail",
+      name: "Nama",
+      major: "Jurusan",
+      sem: "Sem",
+      gpa: "IPK",
+      status: "Status",
+      actions: "Aksi"
     }
   }
 };

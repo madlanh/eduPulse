@@ -6,6 +6,7 @@ export enum LearningStyle {
 }
 
 export type Language = 'en' | 'id';
+export type UserRole = 'student' | 'admin';
 
 export interface Course {
   id: string;
@@ -16,6 +17,8 @@ export interface Course {
 }
 
 export interface StudentProfile {
+  id: string;
+  email: string;
   name: string;
   major: string;
   semester: number;
@@ -23,6 +26,11 @@ export interface StudentProfile {
   learningStyle: LearningStyle;
   interests: string[];
   weaknesses: string[];
+}
+
+export interface StudentData {
+  profile: StudentProfile;
+  courses: Course[];
 }
 
 export enum RecommendationType {
