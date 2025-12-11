@@ -7,6 +7,7 @@ export enum LearningStyle {
 
 export type Language = 'en' | 'id';
 export type UserRole = 'student' | 'admin';
+export type Theme = 'light' | 'dark';
 
 export interface Course {
   id: string;
