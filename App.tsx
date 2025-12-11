@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import ProfileEditor from './components/ProfileEditor';
@@ -6,13 +6,14 @@ import AIRecommendations from './components/AIRecommendations';
 import Login from './components/Login';
 import AdminStudentList from './components/AdminStudentList';
 import { MOCK_STUDENTS_DB } from './constants';
-import { StudentProfile, Course, Language, UserRole, StudentData } from './types';
+import { StudentProfile, Course, Language, UserRole, StudentData, Theme } from './types';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>('student');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [language, setLanguage] = useState<Language>('id'); 
+  const [theme, setTheme] = useState<Theme>('light');
   
   // Data State
   const [studentsDb, setStudentsDb] = useState<StudentData[]>(MOCK_STUDENTS_DB);
@@ -20,6 +21,19 @@ const App: React.FC = () => {
 
   // For Admin Navigation
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+
+  // Apply dark mode class
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const handleLogin = (email: string) => {
     // Simple role detection logic
@@ -70,7 +84,9 @@ const App: React.FC = () => {
       <Login 
         onLogin={handleLogin} 
         language={language} 
-        setLanguage={setLanguage} 
+        setLanguage={setLanguage}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
     );
   }
@@ -120,6 +136,8 @@ const App: React.FC = () => {
       onTabChange={setActiveTab} 
       language={language} 
       setLanguage={setLanguage}
+      theme={theme}
+      toggleTheme={toggleTheme}
       onLogout={handleLogout}
       userRole={userRole}
       showBackBtn={userRole === 'admin' && !!selectedStudentId}
