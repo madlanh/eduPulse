@@ -64,10 +64,13 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
     alert(t.successMsg);
   };
 
+  const inputClass = "w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors";
+  const tableInputClass = "w-full p-1 border-b border-gray-300 dark:border-gray-600 focus:border-primary-500 outline-none bg-transparent text-gray-900 dark:text-white transition-colors";
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">{t.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{t.title}</h2>
         <button 
           onClick={saveAll}
           className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors shadow-sm"
@@ -77,42 +80,42 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
         </button>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">{t.personalDetails}</h3>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">{t.personalDetails}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.fullName}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.fullName}</label>
             <input 
               type="text" 
               value={localProfile.name} 
               onChange={(e) => handleProfileChange('name', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.major}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.major}</label>
             <input 
               type="text" 
               value={localProfile.major} 
               onChange={(e) => handleProfileChange('major', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.semester}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.semester}</label>
             <input 
               type="number" 
               value={localProfile.semester} 
               onChange={(e) => handleProfileChange('semester', parseInt(e.target.value))}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.learningStyle}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.learningStyle}</label>
             <select 
               value={localProfile.learningStyle} 
               onChange={(e) => handleProfileChange('learningStyle', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className={inputClass}
             >
               {Object.values(LearningStyle).map(style => (
                 <option key={style} value={style}>{style}</option>
@@ -120,49 +123,49 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
             </select>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.interests}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.interests}</label>
             <input 
               type="text" 
               value={localProfile.interests.join(', ')} 
               onChange={(e) => handleProfileChange('interests', e.target.value.split(',').map(s => s.trim()))}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className={inputClass}
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.weaknesses}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.weaknesses}</label>
             <input 
               type="text" 
               value={localProfile.weaknesses.join(', ')} 
               onChange={(e) => handleProfileChange('weaknesses', e.target.value.split(',').map(s => s.trim()))}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className={inputClass}
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <div className="flex justify-between items-center mb-4 border-b pb-2">
-            <h3 className="text-lg font-semibold text-gray-800">{t.courseGrades}</h3>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+        <div className="flex justify-between items-center mb-4 border-b dark:border-gray-700 pb-2">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{t.courseGrades}</h3>
             <button 
                 onClick={addCourse}
-                className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-md flex items-center transition-colors"
+                className="text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-md flex items-center transition-colors"
             >
                 <Plus size={16} className="mr-1" /> {t.addCourse}
             </button>
         </div>
         
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.courseName}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.grade} (0-100)</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.credits}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.category}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.courseName}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.grade} (0-100)</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.credits}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.category}</th>
                 <th className="px-6 py-3 text-right"></th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {localCourses.map((course) => (
                 <tr key={course.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -170,7 +173,7 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
                       type="text" 
                       value={course.name} 
                       onChange={(e) => handleCourseChange(course.id, 'name', e.target.value)}
-                      className="w-full p-1 border-b border-gray-300 focus:border-primary-500 outline-none"
+                      className={tableInputClass}
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -178,7 +181,7 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
                       type="number" 
                       value={course.grade} 
                       onChange={(e) => handleCourseChange(course.id, 'grade', parseInt(e.target.value))}
-                      className="w-20 p-1 border-b border-gray-300 focus:border-primary-500 outline-none"
+                      className={`${tableInputClass} w-20`}
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -186,25 +189,25 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, courses, onUpdat
                       type="number" 
                       value={course.credits} 
                       onChange={(e) => handleCourseChange(course.id, 'credits', parseInt(e.target.value))}
-                      className="w-16 p-1 border-b border-gray-300 focus:border-primary-500 outline-none"
+                      className={`${tableInputClass} w-16`}
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                      <select 
                       value={course.category} 
                       onChange={(e) => handleCourseChange(course.id, 'category', e.target.value)}
-                      className="w-full p-1 border-b border-gray-300 focus:border-primary-500 outline-none bg-transparent"
+                      className={`${tableInputClass} cursor-pointer`}
                     >
-                        <option>Core</option>
-                        <option>Elective</option>
-                        <option>Lab</option>
-                        <option>General</option>
+                        <option className="dark:bg-gray-800">Core</option>
+                        <option className="dark:bg-gray-800">Elective</option>
+                        <option className="dark:bg-gray-800">Lab</option>
+                        <option className="dark:bg-gray-800">General</option>
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button 
                         onClick={() => removeCourse(course.id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                     >
                         <Trash2 size={18} />
                     </button>
