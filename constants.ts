@@ -118,7 +118,6 @@ export const TRANSLATIONS = {
     },
     recommendations: {
       title: "AI Recommendation Engine",
-      subtitle: "Uses Gemini 2.5 Flash to analyze your profile and suggest the best path forward.",
       analyzeBtn: "Analyze My Profile",
       analyzingBtn: "Analyzing...",
       regenerateBtn: "Regenerate",
@@ -197,7 +196,6 @@ export const TRANSLATIONS = {
     },
     recommendations: {
       title: "Mesin Rekomendasi AI",
-      subtitle: "Menggunakan Gemini 2.5 Flash untuk menganalisis profil Anda dan menyarankan jalur terbaik ke depan.",
       analyzeBtn: "Analisis Profil Saya",
       analyzingBtn: "Menganalisis...",
       regenerateBtn: "Analisis Ulang",
