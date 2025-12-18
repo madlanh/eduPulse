@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
+import { Link, useLocation } from 'react-router-dom'; // Import Link & useLocation
 import { BookOpen, User, LayoutDashboard, BrainCircuit, Globe, LogOut, ArrowLeft, Users, Moon, Sun } from 'lucide-react';
 import { Language, UserRole, Theme } from '../types';
 import { TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
   children: ReactNode;
-  activeTab: string;
-  onTabChange: (tab: string) => void;
+  // activeTab & onTabChange DIHAPUS karena diganti Router
   language: Language;
   setLanguage: (lang: Language) => void;
   theme: Theme;
@@ -19,8 +19,6 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
-  activeTab, 
-  onTabChange, 
   language, 
   setLanguage, 
   theme,
@@ -30,16 +28,18 @@ const Layout: React.FC<LayoutProps> = ({
   showBackBtn = false,
   onBack
 }) => {
+  const location = useLocation(); // Mendapatkan URL saat ini
   const t = TRANSLATIONS[language].nav;
   
+  // Perhatikan path 'to' sesuai dengan Route di App.tsx
   const navItems = [
-    { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
-    { id: 'profile', label: t.profile, icon: User },
-    { id: 'recommendations', label: t.recommendations, icon: BrainCircuit },
+    { id: 'dashboard', path: '/', label: t.dashboard, icon: LayoutDashboard },
+    { id: 'profile', path: '/profile', label: t.profile, icon: User },
+    { id: 'recommendations', path: '/recommendations', label: t.recommendations, icon: BrainCircuit },
   ];
 
   const effectiveNavItems = (userRole === 'admin' && !showBackBtn) 
-    ? [{ id: 'admin-list', label: TRANSLATIONS[language].admin.studentList, icon: Users }] 
+    ? [{ id: 'admin-list', path: '/', label: TRANSLATIONS[language].admin.studentList, icon: Users }] 
     : navItems;
 
   return (
@@ -66,13 +66,13 @@ const Layout: React.FC<LayoutProps> = ({
 
           {effectiveNavItems.map((item) => {
             const Icon = item.icon;
-            // Highlight if active. If in admin list view, 'admin-list' is effectively active
-            const isActive = activeTab === item.id || (userRole === 'admin' && !showBackBtn && item.id === 'admin-list');
+            // Cek apakah path saat ini sama dengan path item
+            const isActive = location.pathname === item.path;
             
             return (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => onTabChange(item.id)}
+                to={item.path}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                   isActive 
                     ? 'bg-primary-50 dark:bg-red-900/20 text-primary-600 dark:text-primary-400 font-medium border-l-4 border-primary-600 dark:border-primary-500' 
@@ -81,13 +81,13 @@ const Layout: React.FC<LayoutProps> = ({
               >
                 <Icon size={20} />
                 <span>{item.label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>
 
         <div className="p-4 space-y-4 border-t border-gray-100 dark:border-gray-700">
-             {/* Language & Theme Switcher Row */}
+             {/* Bagian bawah sidebar tetap sama */}
             <div className="flex items-center gap-2">
                 <div className="flex-1 bg-gray-50 dark:bg-gray-700 p-2 rounded-lg flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
@@ -113,7 +113,6 @@ const Layout: React.FC<LayoutProps> = ({
                 <button 
                   onClick={toggleTheme}
                   className="p-2 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                  aria-label="Toggle Theme"
                 >
                   {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                 </button>
@@ -126,13 +125,6 @@ const Layout: React.FC<LayoutProps> = ({
                 <LogOut size={20} />
                 <span className="font-medium">{t.logout}</span>
             </button>
-
-            {userRole === 'student' && (
-                <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-lg p-4 text-white text-sm shadow-md">
-                    <p className="font-semibold mb-1">{t.protip}</p>
-                    <p className="opacity-90 text-xs">{t.protipDesc}</p>
-                </div>
-            )}
         </div>
       </aside>
 
@@ -140,7 +132,8 @@ const Layout: React.FC<LayoutProps> = ({
       <main className="flex-1 flex flex-col overflow-hidden relative">
         {/* Mobile Header */}
         <header className="md:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between transition-colors">
-           <div className="flex items-center space-x-2">
+             {/* Header mobile tetap sama */}
+             <div className="flex items-center space-x-2">
              {showBackBtn ? (
                  <button onClick={onBack} className="p-1 -ml-1 text-gray-600 dark:text-gray-300">
                      <ArrowLeft size={24} />
@@ -152,40 +145,27 @@ const Layout: React.FC<LayoutProps> = ({
            </div>
            
            <div className="flex items-center space-x-3">
-             <button 
-                  onClick={toggleTheme}
-                  className="text-gray-500 dark:text-gray-300 hover:text-primary-600"
-                >
+             <button onClick={toggleTheme} className="text-gray-500 dark:text-gray-300">
                   {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
              </button>
-             <button 
-                onClick={() => setLanguage(language === 'en' ? 'id' : 'en')}
-                className="font-bold text-primary-600 dark:text-primary-400 text-sm border border-primary-200 dark:border-primary-800 px-2 py-1 rounded-md"
-             >
-                {language.toUpperCase()}
-             </button>
-             <button 
-                onClick={onLogout}
-                className="text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
-                aria-label="Logout"
-             >
+             <button onClick={onLogout} className="text-gray-500 dark:text-gray-300">
                 <LogOut size={20} />
              </button>
            </div>
         </header>
 
-         {/* Mobile Nav Bar (Bottom) - Only show if standard view (Student or Admin View Student) */}
+         {/* Mobile Nav Bar (Bottom) - GANTI DENGAN LINK */}
          {(!showBackBtn && userRole === 'admin') ? null : (
              <div className="md:hidden bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-4 py-2 flex justify-around">
                 {navItems.map((item) => (
-                    <button 
-                    key={item.id} 
-                    onClick={() => onTabChange(item.id)}
-                    className={`flex flex-col items-center p-2 ${activeTab === item.id ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
+                    <Link 
+                        key={item.id} 
+                        to={item.path}
+                        className={`flex flex-col items-center p-2 ${location.pathname === item.path ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
                     >
-                    <item.icon size={20} />
-                    <span className="text-[10px] mt-1">{item.label}</span>
-                    </button>
+                        <item.icon size={20} />
+                        <span className="text-[10px] mt-1">{item.label}</span>
+                    </Link>
                 ))}
              </div>
          )}
