@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'; // Import Router
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import ProfileEditor from './components/ProfileEditor';
@@ -11,18 +12,14 @@ import { StudentProfile, Course, Language, UserRole, StudentData, Theme } from '
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>('student');
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [language, setLanguage] = useState<Language>('id'); 
+  const [language, setLanguage] = useState<Language>('id');
   const [theme, setTheme] = useState<Theme>('light');
   
   // Data State
   const [studentsDb, setStudentsDb] = useState<StudentData[]>(MOCK_STUDENTS_DB);
-  const [currentStudentId, setCurrentStudentId] = useState<string>('s1'); // Default to first student for 'student' role
-
-  // For Admin Navigation
+  const [currentStudentId, setCurrentStudentId] = useState<string>('s1');
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
-  // Apply dark mode class
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -31,35 +28,29 @@ const App: React.FC = () => {
     }
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   const handleLogin = (email: string) => {
-    // Simple role detection logic
     if (email.toLowerCase().includes('admin')) {
         setUserRole('admin');
-        setSelectedStudentId(null); // Admin starts at list view
+        setSelectedStudentId(null);
     } else {
         setUserRole('student');
-        setCurrentStudentId('s1'); // In a real app, this would fetch based on auth
+        setCurrentStudentId('s1');
     }
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setActiveTab('dashboard');
     setUserRole('student');
     setSelectedStudentId(null);
   };
 
-  // Helper to get currently active student data
   const getCurrentData = () => {
     if (userRole === 'student') {
         return studentsDb.find(s => s.profile.id === currentStudentId) || studentsDb[0];
     } else {
-        // Admin mode: if selected, show that student, else return placeholder (shouldn't happen in renderContent logic)
         return studentsDb.find(s => s.profile.id === selectedStudentId) || studentsDb[0];
     }
   };
@@ -91,60 +82,50 @@ const App: React.FC = () => {
     );
   }
 
-  // Determine what to render
-  const renderContent = () => {
-    // Case 1: Admin viewing list
-    if (userRole === 'admin' && !selectedStudentId) {
-        return (
-            <AdminStudentList 
-                students={studentsDb} 
-                language={language} 
-                onSelectStudent={(id) => {
-                    setSelectedStudentId(id);
-                    setActiveTab('dashboard'); // Reset tab when entering student view
-                }}
-            />
-        );
-    }
-
-    // Case 2: Student View or Admin viewing a specific Student
-    const { profile, courses } = getCurrentData();
-
-    switch (activeTab) {
-      case 'dashboard':
-        return <Dashboard profile={profile} courses={courses} language={language} />;
-      case 'profile':
-        return (
-          <ProfileEditor 
-            profile={profile} 
-            courses={courses} 
-            onUpdateProfile={(p) => updateStudentData(p, undefined)}
-            onUpdateCourses={(c) => updateStudentData(undefined, c)}
-            language={language}
-          />
-        );
-      case 'recommendations':
-        return <AIRecommendations profile={profile} courses={courses} language={language} />;
-      default:
-        return <Dashboard profile={profile} courses={courses} language={language} />;
-    }
-  };
+  const { profile, courses } = getCurrentData();
 
   return (
-    <Layout 
-      activeTab={activeTab} 
-      onTabChange={setActiveTab} 
-      language={language} 
-      setLanguage={setLanguage}
-      theme={theme}
-      toggleTheme={toggleTheme}
-      onLogout={handleLogout}
-      userRole={userRole}
-      showBackBtn={userRole === 'admin' && !!selectedStudentId}
-      onBack={() => setSelectedStudentId(null)}
-    >
-      {renderContent()}
-    </Layout>
+    <HashRouter>
+      <Layout 
+        language={language} 
+        setLanguage={setLanguage}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        onLogout={handleLogout}
+        userRole={userRole}
+        showBackBtn={userRole === 'admin' && !!selectedStudentId}
+        onBack={() => setSelectedStudentId(null)}
+      >
+        <Routes>
+          {/* Routing Logic */}
+          {userRole === 'admin' && !selectedStudentId ? (
+             <Route path="*" element={
+                <AdminStudentList 
+                    students={studentsDb} 
+                    language={language} 
+                    onSelectStudent={(id) => setSelectedStudentId(id)}
+                />
+             } />
+          ) : (
+            <>
+              <Route path="/" element={<Dashboard profile={profile} courses={courses} language={language} theme={theme}/>} />
+              <Route path="/profile" element={
+                <ProfileEditor 
+                    profile={profile} 
+                    courses={courses} 
+                    onUpdateProfile={(p) => updateStudentData(p, undefined)}
+                    onUpdateCourses={(c) => updateStudentData(undefined, c)}
+                    language={language}
+                    theme={theme}
+                />
+              } />
+              <Route path="/recommendations" element={<AIRecommendations profile={profile} courses={courses} language={language} />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </>
+          )}
+        </Routes>
+      </Layout>
+    </HashRouter>
   );
 };
 

@@ -1,23 +1,21 @@
 import { Course, LearningStyle, StudentProfile, StudentData } from './types';
 
+// Data Mahasiswa Utama (Siti Aminah - Performa Menengah/Baik)
 export const INITIAL_PROFILE: StudentProfile = {
   id: "s1",
-  email: "alex@student.university.ac.id",
-  name: "Alex Johnson",
-  major: "Computer Science",
-  semester: 4,
-  gpa: 3.2,
-  learningStyle: LearningStyle.VISUAL,
-  interests: ["Artificial Intelligence", "Web Development", "Game Design"],
-  weaknesses: ["Advanced Calculus", "Time Management"]
+  email: "siti.aminah@student.university.ac.id",
+  name: "Siti Aminah",
+  major: "Informatika (PJJ)",
+  semester: 5,
+  gpa: 3.45,
+  learningStyle: LearningStyle.AUDITORY,
+  interests: ["Data Science", "Math"],
+  weaknesses: ["Time Management"]
 };
 
 export const INITIAL_COURSES: Course[] = [
-  { id: '1', name: 'Data Structures & Algorithms', grade: 88, credits: 4, category: 'Core' },
-  { id: '2', name: 'Calculus II', grade: 65, credits: 3, category: 'Core' },
-  { id: '3', name: 'Introduction to Psychology', grade: 92, credits: 3, category: 'Elective' },
-  { id: '4', name: 'Database Management', grade: 78, credits: 3, category: 'Core' },
-  { id: '5', name: 'Physics I', grade: 72, credits: 4, category: 'Core' },
+  { id: '1', code: 'IF-48-03PJJ', name: 'Logika Matematika', grade: 85, credits: 3 },
+  { id: '2', code: 'IF-48-01PJJ', name: 'Matematika Diskrit', grade: 72, credits: 3 },
 ];
 
 export const MOCK_STUDENTS_DB: StudentData[] = [
@@ -26,41 +24,39 @@ export const MOCK_STUDENTS_DB: StudentData[] = [
     courses: INITIAL_COURSES
   },
   {
+    // Mahasiswa 2: Performa Sangat Baik (Untuk tes rekomendasi 'Advancement')
     profile: {
       id: "s2",
-      email: "sarah@student.university.ac.id",
-      name: "Sarah Wijaya",
-      major: "Medicine",
-      semester: 6,
-      gpa: 3.85,
+      email: "andi.pratama@student.university.ac.id",
+      name: "Andi Pratama",
+      major: "Informatika (PJJ)",
+      semester: 5,
+      gpa: 3.90,
       learningStyle: LearningStyle.READING_WRITING,
-      interests: ["Anatomy", "Public Health", "Research"],
-      weaknesses: ["Clinical Practice Stress", "Sleep Schedule"]
+      interests: ["Artificial Intelligence", "Logic Programming"],
+      weaknesses: ["Public Speaking"]
     },
     courses: [
-      { id: '101', name: 'Human Anatomy', grade: 95, credits: 4, category: 'Core' },
-      { id: '102', name: 'Pathology', grade: 88, credits: 4, category: 'Core' },
-      { id: '103', name: 'Biochemistry', grade: 92, credits: 3, category: 'Core' },
-      { id: '104', name: 'Medical Ethics', grade: 85, credits: 2, category: 'Elective' }
+      { id: '101', code: 'IF-48-03PJJ', name: 'Logika Matematika', grade: 95, credits: 3 },
+      { id: '102', code: 'IF-48-01PJJ', name: 'Matematika Diskrit', grade: 92, credits: 3 },
     ]
   },
   {
+    // Mahasiswa 3: Performa Perlu Bantuan (Untuk tes rekomendasi 'Remedial')
     profile: {
       id: "s3",
-      email: "budi@student.university.ac.id",
+      email: "budi.santoso@student.university.ac.id",
       name: "Budi Santoso",
-      major: "Mechanical Engineering",
-      semester: 2,
-      gpa: 2.4,
+      major: "Informatika (PJJ)",
+      semester: 5,
+      gpa: 2.10,
       learningStyle: LearningStyle.KINESTHETIC,
-      interests: ["Robotics", "Automotive", "3D Printing"],
-      weaknesses: ["Theoretical Physics", "Calculus", "Writing Reports"]
+      interests: ["Game Development", "Hardware"],
+      weaknesses: ["Abstract Math", "Theory"]
     },
     courses: [
-      { id: '201', name: 'Calculus I', grade: 55, credits: 4, category: 'Core' },
-      { id: '202', name: 'Physics Mechanics', grade: 60, credits: 4, category: 'Core' },
-      { id: '203', name: 'Engineering Drawing', grade: 85, credits: 3, category: 'Lab' },
-      { id: '204', name: 'Material Science', grade: 65, credits: 3, category: 'Core' }
+      { id: '201', code: 'IF-48-03PJJ', name: 'Logika Matematika', grade: 45, credits: 3 },
+      { id: '202', code: 'IF-48-01PJJ', name: 'Matematika Diskrit', grade: 55, credits: 3 },
     ]
   }
 ];
@@ -181,7 +177,7 @@ export const TRANSLATIONS = {
       save: "Simpan Perubahan",
       personalDetails: "Detail Pribadi",
       fullName: "Nama Lengkap",
-      major: "Jurusan",
+      major: "Program Studi",
       semester: "Semester Saat Ini",
       learningStyle: "Gaya Belajar",
       interests: "Minat (pisahkan dengan koma)",
@@ -212,10 +208,10 @@ export const TRANSLATIONS = {
       totalStudents: "Total Mahasiswa",
       avgGpa: "Rata-rata IPK",
       atRisk: "Mahasiswa Berisiko",
-      searchPlaceholder: "Cari nama atau jurusan...",
+      searchPlaceholder: "Cari nama atau program studi...",
       viewDetail: "Lihat Detail",
       name: "Nama",
-      major: "Jurusan",
+      major: "Program Studi",
       sem: "Sem",
       gpa: "IPK",
       status: "Status",

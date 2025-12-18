@@ -11,10 +11,10 @@ export type Theme = 'light' | 'dark';
 
 export interface Course {
   id: string;
+  code: string;
   name: string;
-  grade: number; // 0-100 scale
+  grade: number;
   credits: number;
-  category: string;
 }
 
 export interface StudentProfile {
@@ -47,7 +47,7 @@ export interface Recommendation {
   type: RecommendationType;
   description: string;
   platformOrLink?: string;
-  relevanceScore: number; // 0-100
+  relevanceScore: number;
   reasoning: string;
 }
 
